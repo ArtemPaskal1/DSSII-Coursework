@@ -1,0 +1,15 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.pdb
+*.exe
+*.dll
+*.cache
+bin/
+obj/
+
+# Node / React
+node_modules/
+dist/
+.env
