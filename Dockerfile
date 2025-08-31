@@ -1,30 +1,25 @@
-# Stage 1: Build the project
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy back-end folder into the container
+# Copy the back-end folder into the container
 COPY back-end/ ./back-end/
 
-# Change directory to where the .csproj file is
+# Go to the back-end folder
 WORKDIR /app/back-end
 
-# Restore dependencies and publish the project in Release mode to /out
+# Restore dependencies and publish the project to /out
 RUN dotnet restore
 RUN dotnet publish back-end.csproj -c Release -o /out
 
-# Stage 2: Run the project
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
-# Set working directory inside the runtime container
 WORKDIR /app
 
-# Copy the published files from the build stage
-COPY --from=build /app/back-end/out ./ 
+# Copy published files from build stage
+COPY --from=build /out ./
 
-# Expose port (если у тебя API слушает 5000, поменяй при необходимости)
-EXPOSE 5000
-
-# Command to run the application
+# Command to run the app
 ENTRYPOINT ["dotnet", "back-end.dll"]
